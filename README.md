@@ -19,3 +19,19 @@ db 1개 (CPU: 2c, RAM: 8G, Storge: 40G)
 haproxy + dns 1개 (CPU: 1c, RAM: 2G, Storge: 20G)
 
 예상
+
+haproxy + dns xxx.xxx.xxx.110
+
+Control Plane 1 xxx.xxx.xxx.121
+
+Wroker Node 1 xxx.xxx.xxx.131
+
+Wroker Node 2 xxx.xxx.xxx.132
+
+Wroker Node 3 xxx.xxx.xxx.133
+
+jenkins xxx.xxx.xxx.150
+
+db xxx.xxx.xxx.160
+
+nexus xxx.xxx.xxx.170
