@@ -1,9 +1,8 @@
-# XCP-ng 8.2.1 (20231130) 설치 
-[다운로드 링크](https://xcp-ng.org/#easy-to-install)
+# XCP-ng 8.2.1 (20231130) 설치 가이드
 
 ## AMD CPU 환경에서 설치 시 발생하는 에러
 
-설치 중 아래와 같은 에러가 발생할 수 있습니다:
+설치 중 아래와 같은 에러가 발생:
 
 ```
 panic on cpu 0: xen_bug: iommu_init.c:1425
@@ -45,8 +44,6 @@ vi /boot/grub/grub.cfg
 multiboot2 /boot/xen.gz iommu=off ...
 ```
 
-변경 후 저장하면 다음 부팅부터는 수동 입력 없이 자동 적용됩니다.
-
 ---
 
 ## XCP-ng Center 설치
@@ -58,6 +55,44 @@ multiboot2 /boot/xen.gz iommu=off ...
 
 ---
 
+## ISO 라이브러리 추가
+
+1. ISO 파일을 저장할 디렉터리 생성:
+
+    ```bash
+    mkdir /iso
+    ```
+
+2. ISO 스토리지 리포지터리 생성:
+
+    ```bash
+    xe sr-create name-label="iso" type=iso device-config:location=/iso/ device-config:legacy_mode=true content-type=iso
+    ```
+
+---
+
+## 로컬 스토리지 추가
+
+1. 추가 가능한 디스크 확인:
+
+    ```bash
+    fdisk -l
+    ```
+
+2. 호스트 UUID 확인:
+
+    ```bash
+    xe host-list
+    ```
+
+3. 로컬 스토리지 SR 생성 (예시: `/dev/nvme1n1`, UUID는 환경에 따라 변경):
+
+    ```bash
+    xe sr-create content-type=user device-config:device=/dev/nvme1n1 host-uuid=a1d1ab0a-7e33-4fd4-be57-d579981157d6 name-label="Local storage2" shared=false type=lvm
+    ```
+
+---
+
 ## 정리
 
 | 항목                     | 내용                          |
@@ -65,4 +100,6 @@ multiboot2 /boot/xen.gz iommu=off ...
 | 발생 에러                | `panic on cpu 0: xen_bug: iommu_init.c:1425` |
 | 임시 해결 방법           | 설치 메뉴 편집 후 `iommu=off` 추가 |
 | 영구 해결 방법           | `/boot/grub/grub.cfg` 수정 |
+| ISO 라이브러리 경로       | `/iso` 디렉터리 |
+| 로컬 스토리지 디바이스   | 예: `/dev/nvme1n1` |
 | XCP-ng Center 버전        | 20.04.01.33 |
