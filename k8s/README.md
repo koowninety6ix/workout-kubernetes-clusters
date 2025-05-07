@@ -115,11 +115,11 @@ sudo kubeadm init \
   --upload-certs \
   --pod-network-cidr=10.200.0.0/16
   
-// 조인 명령어 (worker-node 및 추가적인 control-plane 추가시)
+// 조인 명령어 (worker-node 및 추가)
 kubeadm join 192.168.0.110:6443 --token f6q53z.v0hd47wj4o87fulq \
         --discovery-token-ca-cert-hash sha256:fce984a51660635bb962453fc1a7f6375c71c9b60742afd222bbc384817f1422
 
-# kubeconfig 파일 설정
+# kubeconfig 파일 설정 kubectl
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
@@ -127,3 +127,27 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 # 네트워크 플러그인 설치
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
 kubectl get pods -n kube-system
+
+# 대시보드 플러그인 설치
+wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+vi recommended.yaml
+
+--------------------------------------------------------
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  type: NodePort  # < 추가
+  ports:
+    - port: 443
+      targetPort: 8443
+      nodePort: 31000  # < 추가
+  selector:
+    k8s-app: kubernetes-dashboard
+-------------------------------------------------------
+
+kubectl apply -f recommended.yaml
