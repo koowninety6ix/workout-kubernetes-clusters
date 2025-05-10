@@ -1,153 +1,266 @@
-# host 설정
+
+# Kubernetes 1.33 클러스터 구축 (Rocky Linux 9.5)
+
+---
+
+## 시스템 사전 설정
+
+### 방화벽 비활성화
+
+```bash
+systemctl stop firewalld
+systemctl disable firewalld
+reboot
+```
+
+> 방화벽 설정 (특정 포트만 허용시 에러 일단 제외하는걸로)
+
+---
+
+### 호스트네임 및 hosts 설정
+
+```bash
 hostnamectl set-hostname {hostname}
 vi /etc/hosts
-xxx.xxx.xxx.xxx {hostname}
+# 예시:
+# xxx.xxx.xxx.xxx {hostname}
+```
 
-# dnf 업데이트
+---
+
+### 기본 패키지 설치 및 업데이트
+
+```bash
 dnf update -y
-dnf isntall -y net-tools
-dnf isntall -y wget
-dnf install -y tar
+dnf install -y net-tools wget
+```
 
-# 스왑 메모리 비활성화
+---
+
+### 스왑 비활성화
+
+```bash
 swapoff -a && sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+```
 
-# 방화벽 설정 port 허용
-firewall-cmd --add-port=80/tcp --permanent
+---
 
-// k8s port (https://kubernetes.io/ko/docs/reference/networking/ports-and-protocols/)
+### 커널 모듈 및 네트워크 설정
 
-// control-plane
-for port in 10250 10256 30000-32767
-do
- firewall-cmd --add-port=$port/tcp --permanent
-done
+```bash
+cat <<EOF | tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
 
-// worker-node
-for port in 6443 2379-2380 10250 10257 10259
-do
- firewall-cmd --add-port=$port/tcp --permanent
-done
+modprobe overlay
+modprobe br_netfilter
 
-// calico 
-firewall-cmd --permanent --add-port=179/tcp
-firewall-cmd --permanent --add-port=4789/udp
-firewall-cmd --permanent --add-port=5473/tcp
-firewall-cmd --permanent --add-port=443/udp
-firewall-cmd --permanent --add-port=6443/udp
-firewall-cmd --permanent --add-port=2379/udp
-
-firewall-cmd --reload
-firewall-cmd --list-all
-
-
-# 스왑 메모리 비활성화
-swapoff -a && sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-
-# iptables 설정
-cat <<EOF >  /etc/sysctl.d/k8s.conf
+cat <<EOF > /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 net.ipv4.ip_forward = 1
 EOF
 
 sysctl --system
+```
 
-# 필요 패지키 설치
-dnf install -y tar
+---
 
+## 컨테이너 런타임 (containerd)
 
-# 컨테이너 런타임 설치 (containerd) (https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
+### 옵션 1. 수동 설치
 
-//1 option1
+```bash
 wget https://github.com/containerd/containerd/releases/download/v1.7.21/containerd-1.7.21-linux-amd64.tar.gz
 tar Cxzvf /usr/local containerd-1.7.21-linux-amd64.tar.gz
 
-// systemd 설정
 wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service -P /usr/local/lib/systemd/system/
 systemctl daemon-reload
 systemctl enable --now containerd
 
-
-// runc 설치 (https://github.com/opencontainers/runc/releases)
 wget https://github.com/opencontainers/runc/releases/download/v1.1.14/runc.amd64
 install -m 755 runc.amd64 /usr/local/sbin/runc
+```
 
-//2 option2
+### 옵션 2. 패키지 설치
+
+```bash
 dnf install -y dnf-plugins-core
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf install -y containerd.io
 
-// 설정 파일 세팅
 mkdir -p /etc/containerd
 containerd config default | tee /etc/containerd/config.toml
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 
 systemctl restart containerd
 systemctl enable containerd
+```
 
-# k8s 설치 (https://kubernetes.io/ko/docs/setup/production-environment/tools/kubeadm/install-kubeadm)
+---
 
-cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+## Kubernetes 설치
+
+### 저장소 추가 및 설치
+
+```bash
+cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
-name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+name=Kubernetes v1.33
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.33/rpm/
 enabled=1
 gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-exclude=kubelet kubeadm kubectl
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.33/rpm/repodata/repomd.xml.key
 EOF
 
-
-# permissive 모드로 SELinux 설정(효과적으로 비활성화)
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl enable --now kubelet
+```
 
-modprobe br_netfilter
+---
 
-/// 마스터 노드 초기화 (이전 haproxy 설치)
+## 클러스터 초기화 (Control Plane)
 
-sudo kubeadm init \
+```bash
+kubeadm init \
   --control-plane-endpoint "xxx.xxx.xxx.110:6443" \
   --upload-certs \
-  --pod-network-cidr=10.200.0.0/16
-  
-// 조인 명령어 (worker-node 및 추가)
-kubeadm join 192.168.0.110:6443 --token f6q53z.v0hd47wj4o87fulq \
-        --discovery-token-ca-cert-hash sha256:fce984a51660635bb962453fc1a7f6375c71c9b60742afd222bbc384817f1422
+  --pod-network-cidr=192.168.0.0/16
+```
 
-# kubeconfig 파일 설정 kubectl
+> 내부 네트워크가 192.168.x.x 대역일 경우 Calico CIDR 변경 필요
+
+### kubectl 설정
+
+```bash
 mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+```
 
-# 네트워크 플러그인 설치
+## 클러스터 조인 (Control Plane)
+
+```bash
+kubeadm join xxx.xxx.xxx.110:6443 --token {token} \
+  --discovery-token-ca-cert-hash {discovery-token-ca-cert-hash} \
+  --control-plane --certificate-key {certificate-key}
+```
+
+## 클러스터 조인 (Worker Node)
+
+```bash
+kubeadm join xxx.xxx.xxx.110:6443 --token {token} \
+  --discovery-token-ca-cert-hash {discovery-token-ca-cert-hash} 
+```
+
+---
+
+## 네트워크 플러그인 (Calico)
+
+```bash
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
 kubectl get pods -n kube-system
+```
 
-# 대시보드 플러그인 설치
+---
+
+## Kubernetes 대시보드 설치
+
+### 배포 파일 수정 (NodePort 사용)
+
+```bash
 wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 vi recommended.yaml
+```
 
---------------------------------------------------------
-kind: Service
-apiVersion: v1
-metadata:
-  labels:
-    k8s-app: kubernetes-dashboard
-  name: kubernetes-dashboard
-  namespace: kubernetes-dashboard
+```yaml
 spec:
-  type: NodePort  # < 추가
+  type: NodePort         < 추가
   ports:
     - port: 443
       targetPort: 8443
-      nodePort: 31000  # < 추가
-  selector:
-    k8s-app: kubernetes-dashboard
--------------------------------------------------------
+      nodePort: 31000    < 추가
+```
 
+```bash
 kubectl apply -f recommended.yaml
+```
+
+---
+
+## 대시보드 관리자 계정 생성
+
+```bash
+vi dashboard-admin.yaml
+```
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+```
+
+```bash
+kubectl apply -f dashboard-admin.yaml
+```
+
+---
+
+### 토큰 생성 및 로그인
+
+```bash
+kubectl -n kubernetes-dashboard create token admin-user
+```
+
+토큰으로 대시보드 로그인 가능
+
+---
+
+### 로그인 스킵 설정 (선택)
+
+```bash
+kubectl edit deploy kubernetes-dashboard -n kubernetes-dashboard
+```
+
+```yaml
+- args:
+  - --enable-skip-login             < 추가
+  - --disable-settings-authorizer   < 추가
+```
+
+---
+
+## 접속 확인
+
+```bash
+https://{NODE_IP}:31000
+```
+
+---
+
+## 참고 URL
+
+- Kubernetes 설치 가이드: https://kubernetes.io/ko/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+- containerd 설치: https://github.com/containerd/containerd/blob/main/docs/getting-started.md
+- runc 설치: https://github.com/opencontainers/runc/releases
+- Calico 공식 문서: https://projectcalico.docs.tigera.io/
+- Kubernetes Dashboard: https://github.com/kubernetes/dashboard
