@@ -134,6 +134,25 @@ kubeadm init \
 
 > 내부 네트워크가 192.168.x.x 대역일 경우 Calico CIDR 변경 필요
 
+
+## 클러스터 조인 명령어 재 발행
+
+```bash
+kubeadm token create --print-join-command
+> 조인 명령어 생성
+kubeadm join xxx.xxx.xxx.110:6443 --token {token} \
+  --discovery-token-ca-cert-hash {discovery-token-ca-cert-hash}
+
+
+kubeadm init phase upload-certs --upload-certs
+> certificate-key 얻기
+[upload-certs] Storing the certificates in Secret "kubeadm-certs" in the "kube-system" Namespace
+[upload-certs] Using certificate key:
+{certificate-key}
+
+```
+
+
 ### kubectl 설정
 
 ```bash
