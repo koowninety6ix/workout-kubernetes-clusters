@@ -32,7 +32,7 @@ vi /etc/hosts
 
 ```bash
 dnf update -y
-dnf install -y net-tools wget
+dnf install -y net-tools wget nfs-utils
 ```
 
 ---
