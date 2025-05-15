@@ -1,4 +1,4 @@
-#nexus pod구성 
+# nexus pod구성 
 image repo, helm_repo 역활, 내부 망일때는 dependency repo 역활
 
 ```bash
@@ -40,6 +40,7 @@ metadata:
   namespace: cicd
   name: nexus-repo
 spec:
+  type: ClusterIP
   selector:
     app: nexus-repo
   ports:
