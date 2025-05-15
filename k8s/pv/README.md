@@ -32,9 +32,9 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  selector:
-    matchLabels:
-      name: jenkins-pv
+  storageClassName: nfs
+  volumeName: jenkins-pv
+  volumeMode: Filesystem
 
 kubectl apply -f jenkins_pv_pvc.yaml
 ```
@@ -60,7 +60,6 @@ spec:
     path: /k8s_pv1/nexus_repo
 ---
 kind: PersistentVolumeClaim
-apiVersion: v1
 metadata:
   namespace: cicd
   name: nexus-pvc
@@ -70,9 +69,12 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  selector:
-    matchLabels:
-      name: nexus-pv
+  storageClassName: nfs
+  volumeName: nexus-pv
+  volumeMode: Filesystem
+# selector:
+#   matchLabels:
+#     name: nexus-pv
 
 kubectl apply -f jenkins_pv_pvc.yaml
 ```
