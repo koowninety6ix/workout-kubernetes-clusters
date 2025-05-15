@@ -16,10 +16,9 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: nfs
   nfs:
     server: xxx.xxx.xxx.xxx
-    path: /k8s_pv1/jenkins_home
+    path: /volume1/k8s_pv1/jenkins_home
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -32,7 +31,6 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  storageClassName: nfs
   volumeName: jenkins-pv
   volumeMode: Filesystem
 
@@ -54,10 +52,9 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: nfs
   nfs:
     server: xxx.xxx.xxx.xxx
-    path: /k8s_pv1/nexus_repo
+    path: /volume1/k8s_pv1/nexus_repo
 ---
 kind: PersistentVolumeClaim
 metadata:
@@ -69,12 +66,12 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  storageClassName: nfs
   volumeName: nexus-pv
   volumeMode: Filesystem
-# selector:
+# selector:                                < 해당 내용을 사용하려면 pv의 라벨 지정
 #   matchLabels:
 #     name: nexus-pv
 
 kubectl apply -f jenkins_pv_pvc.yaml
 ```
+> nas의 nfs 설정이 끝나있어야함
