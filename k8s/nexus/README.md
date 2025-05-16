@@ -35,7 +35,7 @@ spec:
           persistentVolumeClaim:
             claimName: nexus-pvc
 ---
-apiVersion: apps/v1
+apiVersion: v1
 kind: Service
 metadata:
   namespace: cicd
