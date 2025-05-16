@@ -35,6 +35,7 @@ spec:
           persistentVolumeClaim:
             claimName: nexus-pvc
 ---
+apiVersion: apps/v1
 kind: Service
 metadata:
   namespace: cicd
@@ -45,12 +46,34 @@ spec:
     app: nexus-repo
   ports:
     - name: repo
+      protocol: TCP
       port: 5000
       targetPort: 5000
     - name: web
+      protocol: TCP
       port: 8081
       targetPort: 8081
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nexus-repo-ingress
+  namespace: cicd
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: repository.cluseters.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nexus-repo
+            port:
+              number: 8081
 
 
 kubectl apply -f nexus_repo.yaml
