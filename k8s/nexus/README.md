@@ -79,3 +79,22 @@ spec:
 kubectl apply -f nexus_repo.yaml
 
 ```
+
+## 내부 구성
+
+1.로그인
+id : admin
+password: {초기 비밀번호는 /nexus-data/admin.password 파일안에 있음.}
+
+2.blob store 생성
+
+img-repo
+helm-repo
+
+3. repostory 생성
+
+docker-hosted
+helm-hosted
+
+4. docker의 경우
+Realms 설정이 필요 > bearer token active 설정
