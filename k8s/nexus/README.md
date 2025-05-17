@@ -26,11 +26,14 @@ spec:
       - name: nexus
         image: sonatype/nexus3:3.80.0
         ports:
-        - containerPort: 5000
-        - containerPort: 8081
+          - containerPort: 5000
+          - containerPort: 8081
         volumeMounts:
           - name: pvc
             mountPath: /nexus-data
+        env:
+          - name: NEXUS_DATA
+            value: /nexus-data
         resources:
           requests:
             memory: "2Gi"
