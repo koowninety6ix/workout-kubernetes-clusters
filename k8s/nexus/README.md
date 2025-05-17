@@ -31,6 +31,13 @@ spec:
         volumeMounts:
           - name: pvc
             mountPath: /nexus-data
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "1"
       volumes:
         - name: pvc
           persistentVolumeClaim:
