@@ -1,4 +1,4 @@
-# haproxt & dns server 설치
+# haproxy & dns server 설치
 
 ## host 설정
 ```bash
