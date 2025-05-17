@@ -8,11 +8,7 @@
 
 cluster
 - Control Plane 3개 (CPU: 2c, RAM: 4G, Storge: 40G)
-- Wroker Node 2개 (CPU: 2c, RAM: 5G, STORGE: 50G)
-
-// jenkins 1개 (CPU: 1c, RAM: 6G, Storge: 30G) 제거 (POD로 올릴예정)
-
-nexus 1개 (CPU: 1c, RAM: 6G, Storge: 30G)
+- Wroker Node 2개 (CPU: 2c, RAM: 5G, Storge: 50G)
 
 db 1개 (CPU: 2c, RAM: 8G, Storge: 40G)
 
@@ -32,10 +28,4 @@ Wroker Node 1 xxx.xxx.xxx.131
 
 Wroker Node 2 xxx.xxx.xxx.132
 
-// Wroker Node 3 xxx.xxx.xxx.133
-
-// jenkins xxx.xxx.xxx.150
-
-// db xxx.xxx.xxx.160
-
-nexus xxx.xxx.xxx.170
+db xxx.xxx.xxx.160
