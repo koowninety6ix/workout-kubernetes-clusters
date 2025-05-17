@@ -3,8 +3,8 @@ image repo, helm_repo 역활, 내부 망일때는 dependency repo 역활
 
 ```bash
 vi nexus_repo.yaml
-
----------------------------------------------------------------------
+```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -75,10 +75,9 @@ spec:
             name: nexus-repo
             port:
               number: 8081
----------------------------------------------------------------------
-
+```
+```bash
 kubectl apply -f nexus_repo.yaml
-
 ```
 
 ## 내부 구성
