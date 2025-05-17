@@ -1,10 +1,12 @@
 # haproxt & dns server 설치
 
 ## host 설정
+```bash
 hostnamectl set-hostname {hostname}
 vi /etc/hosts
-xxx.xxx.xxx.xxx {hostname}
-
+# 예시:
+# xxx.xxx.xxx.xxx {hostname}
+```
 ## haproxy 설치
 
 ```bash
