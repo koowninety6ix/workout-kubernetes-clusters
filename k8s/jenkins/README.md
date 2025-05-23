@@ -1,4 +1,26 @@
-# jenkins 생성
+# jenkins pod 생성
+
+---
+
+## Custom Image 생성
+
+```bash
+vi Dockerfile
+
+docker build tag jenkins-cicd .
+
+docker image {nexushost:port}/jenkins-cicd
+
+docker login {nexushost:port}
+
+docker push {nexushost:port}/jenkins-cicd
+
+```
+> image안에 kubectl, podman, helm, jenkins 설치
+
+---
+
+## 서비스 생성
 
 ```bash
 vi jenkins.yaml
