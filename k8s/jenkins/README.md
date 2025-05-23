@@ -67,6 +67,8 @@ spec:
           limits:
             memory: "2Gi"
             cpu: "1"
+        securityContext:
+          privileged: true
       volumes:
         - name: pvc
           persistentVolumeClaim:
