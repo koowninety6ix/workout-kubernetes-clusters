@@ -117,7 +117,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: jenkins.cluseters.com
+  - host: jenkins.clusters.com
     http:
       paths:
       - path: /
