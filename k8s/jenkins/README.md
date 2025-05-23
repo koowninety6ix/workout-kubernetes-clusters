@@ -97,24 +97,6 @@ spec:
             claimName: jenkins-pvc
 ---
 apiVersion: v1
-kind: Secret
-metadata:
-  name: nexus-registry-secret
-  namespace: cicd
-type: kubernetes.io/dockerconfigjson
-stringData:
-  .dockerconfigjson: |
-    {
-      "auths": {
-        "nexus-repo:5000": {
-          "username": "admin",
-          "password": "{user_password}",
-          "auth": "base64encoded(admin:{user_password})"
-        }
-      }
-    }
----
-apiVersion: v1
 kind: Service
 metadata:
   namespace: cicd
