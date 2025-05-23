@@ -59,6 +59,7 @@ EOF
 
 modprobe overlay
 modprobe br_netfilter
+modprobe ip_tables
 
 cat <<EOF > /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
