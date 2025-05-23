@@ -1,6 +1,8 @@
 # nexus pod구성 
 image repo, helm_repo 역활, 내부 망일때는 dependency repo 역활
 
+---
+
 ```bash
 vi nexus_repo.yaml
 ```
@@ -159,6 +161,8 @@ vi /etc/containerd/confing.toml
 ```bash
 systemctl restart containerd
 ```
+
+---
 
 ## 내부 구성
 
