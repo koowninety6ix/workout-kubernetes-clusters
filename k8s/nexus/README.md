@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: nexus
-        image: sonatype/nexus3:3.80.0
+        image: sonatype/nexus3:3.67.1      < 버전 변경 3.80.0 버전 docker image registry login이 안되는 이슈
         ports:
           - containerPort: 5000
           - containerPort: 8081
