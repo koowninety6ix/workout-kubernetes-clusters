@@ -21,9 +21,13 @@ reboot
 
 ```bash
 hostnamectl set-hostname {hostname}
-vi /etc/hosts
-# 예시:
-# xxx.xxx.xxx.xxx {hostname}
+echo -e "xxx.xxx.xxx.xxx {hostname}" >> /etc/hosts
+```
+
+### resolv.comf 설정 (dns 서버)
+
+```bash
+echo -e "nameserver xxx.xxx.xxx.110" >> /etc/resolv.conf
 ```
 
 ---
