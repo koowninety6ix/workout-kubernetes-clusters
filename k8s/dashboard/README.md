@@ -129,6 +129,17 @@ kubectl apply -f kubernetes-dashboard-ingress.yaml
 
 ---
 
+## 대시보드 리소스 확인용 Matrix Server 설치
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+args:
+    - --kubelet-insecure-tls < 인증 에러날시 deployment에 추가
+```
+
+---
+
 ## 참고 URL
 
  - Kubernetes Dashboard: https://github.com/kubernetes/dashboard
