@@ -106,7 +106,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: repository.cluseters.com
+  - host: repository.clusters.com
     http:
       paths:
       - path: /
