@@ -116,9 +116,48 @@ spec:
             name: nexus-repo
             port:
               number: 8081
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nexus-image-registry-ingress
+  namespace: cicd
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: image-registry.clusters.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nexus-repo
+            port:
+              number: 5000
 ```
 ```bash
 kubectl apply -f nexus_repo.yaml
+```
+
+## containerd 수정 (Node별로 추가 http요청으로 image를 땡겨오려면 필요)
+
+```bash
+vi /etc/containerd/confing.toml
+```
+
+```yaml
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+        > 밑에 내용 추가
+        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."image-registry.clusters.com"]
+          endpoint = ["http://image-registry.clusters.com"]
+```
+
+```bash
+systemctl restart containerd
 ```
 
 ## 내부 구성
