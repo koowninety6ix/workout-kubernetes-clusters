@@ -5,6 +5,34 @@ vi jenkins.yaml
 ```
 
 ```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-pv
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: xxx.xxx.xxx.xxx
+    path: /volume1/k8s_pv1/jenkins_home
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: cicd                          < namespace 미리 생성
+  name: jenkins-pvc
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: jenkins-pv
+  volumeMode: Filesystem
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
