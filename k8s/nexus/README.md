@@ -5,6 +5,37 @@ image repo, helm_repo 역활, 내부 망일때는 dependency repo 역활
 vi nexus_repo.yaml
 ```
 ```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nexus-pv
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: xxx.xxx.xxx.xxx
+    path: /volume1/k8s_pv1/nexus_repo
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: cicd
+  name: nexus-pvc
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: nexus-pv
+  volumeMode: Filesystem
+# selector:                                < 해당 내용을 사용하려면 pv의 라벨 지정
+#   matchLabels:
+#     name: nexus-pv
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
