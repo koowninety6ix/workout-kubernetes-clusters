@@ -1,0 +1,3 @@
+[submodule "workspace/cicd-k8s-pod-springboot-gradle"]
+	path = workspace/cicd-k8s-pod-springboot-gradle
+	url = https://github.com/kim-yeonwook/cicd-k8s-pod-springboot-gradle.git

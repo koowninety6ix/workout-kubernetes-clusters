@@ -1,147 +1,17 @@
-# nexus pod구성 
+# Nexus 생성 
 image repo, helm_repo 역활, 내부 망일때는 dependency repo 역활
 
 ---
 
+## Nexus 구성
+
 ```bash
-vi nexus_repo.yaml
+vi nexus.yaml
 ```
-```yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nexus-pv
-spec:
-  capacity:
-    storage: 100Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: xxx.xxx.xxx.xxx
-    path: /volume1/k8s_pv1/nexus_repo
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  namespace: cicd
-  name: nexus-pvc
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Gi
-  volumeName: nexus-pv
-  volumeMode: Filesystem
-# selector:                                < 해당 내용을 사용하려면 pv의 라벨 지정
-#   matchLabels:
-#     name: nexus-pv
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  namespace: cicd
-  name: nexus-repo
-  labels:
-    app: nexus-repo
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nexus-repo
-  template:
-    metadata:
-      labels:
-        app: nexus-repo
-    spec:
-      containers:
-      - name: nexus
-        image: sonatype/nexus3:3.67.1      < 버전 변경 3.80.0 버전 docker image registry login이 안되는 이슈
-        ports:
-          - containerPort: 5000
-          - containerPort: 8081
-        volumeMounts:
-          - name: pvc
-            mountPath: /nexus-data
-        env:
-          - name: NEXUS_DATA
-            value: /nexus-data
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "500m"
-          limits:
-            memory: "4Gi"
-            cpu: "1"
-      volumes:
-        - name: pvc
-          persistentVolumeClaim:
-            claimName: nexus-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: cicd
-  name: nexus-repo
-spec:
-  type: ClusterIP
-  selector:
-    app: nexus-repo
-  ports:
-    - name: repo
-      protocol: TCP
-      port: 5000
-      targetPort: 5000
-    - name: web
-      protocol: TCP
-      port: 8081
-      targetPort: 8081
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: nexus-repo-ingress
-  namespace: cicd
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  ingressClassName: nginx
-  rules:
-  - host: repository.clusters.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nexus-repo
-            port:
-              number: 8081
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: nexus-image-registry-ingress
-  namespace: cicd
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  ingressClassName: nginx
-  rules:
-  - host: image-registry.clusters.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nexus-repo
-            port:
-              number: 5000
-```
+[Nexus 설정 파일](./nexus.yaml)
+
 ```bash
-kubectl apply -f nexus_repo.yaml
+kubectl apply -f nexus.yaml
 ```
 
 ## containerd 수정 (Node별로 추가 http요청으로 image를 땡겨오려면 필요)
@@ -153,7 +23,7 @@ vi /etc/containerd/confing.toml
 ```yaml
     [plugins."io.containerd.grpc.v1.cri".registry]
       [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
-        > 밑에 내용 추가
+        # 밑에 내용 추가
         [plugins."io.containerd.grpc.v1.cri".registry.mirrors."image-registry.clusters.com"]
           endpoint = ["http://image-registry.clusters.com"]
 ```
@@ -166,19 +36,17 @@ systemctl restart containerd
 
 ## 내부 구성
 
-1.로그인
-id : admin
-password: {초기 비밀번호는 /nexus-data/admin.password 파일안에 있음.}
+### 로그인
+- id : admin 
+- password: {초기 비밀번호는 /nexus-data/admin.password 파일안에 있음.}
 
-2.blob store 생성
+### blob store 생성
+- img-store
+- helm-store 
 
-img-repo
-helm-repo
+### repository 생성
+- docker-hosted
+- helm-hosted
 
-3. repostory 생성
-
-docker-hosted
-helm-hosted
-
-4. docker의 경우
-Realms 설정이 필요 > bearer token active 설정
+### docker의 경우
+- Realms 설정이 필요 > bearer token active 설정
