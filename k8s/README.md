@@ -55,6 +55,7 @@ swapoff -a && sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 cat <<EOF | tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
+ip_tables
 EOF
 
 modprobe overlay
