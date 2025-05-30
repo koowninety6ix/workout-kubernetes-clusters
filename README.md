@@ -34,11 +34,15 @@
 ### Worker Node 13x
 - Wroker Node 1 xxx.xxx.xxx.131
 - Wroker Node 2 xxx.xxx.xxx.132
-
+- Wroker Node 3 xxx.xxx.xxx.133
+- Wroker Node 4 xxx.xxx.xxx.134
 ---
 
+![image](https://github.com/user-attachments/assets/6482c8db-5806-4b61-a188-317c502ee41e)
+
+
 ## 남는 리소스
-cpu 5
-ram 24G
+cpu 1
+ram 14G
 
 worker node 2개 가능
