@@ -14,7 +14,7 @@
 
 ### Cluster
 - Control Plane 3개 (CPU: 2c, RAM: 4G, Storge: 40G)
-- Wroker Node 2개 (CPU: 2c, RAM: 5G, Storge: 50G)
+- Wroker Node 4개 (CPU: 2c, RAM: 7G, Storge: 50G)
 
 ### 기타
 - haproxy + dns 1개 (CPU: 1c, RAM: 2G, Storge: 20G)
@@ -43,6 +43,4 @@
 
 ## 남는 리소스
 cpu 1
-ram 14G
-
-worker node 2개 가능
+ram 6G

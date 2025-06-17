@@ -25,9 +25,9 @@ backend kubernetes-masters
     mode tcp
     balance roundrobin
     option tcp-check
-    server control-plane1 xxx.xxxx.xxx.121:6443 check
-    server control-plane2 xxx.xxxx.xxx.122:6443 check
-    server control-plane3 xxx.xxxx.xxx.123:6443 check
+    server control-plane1 xxx.xxx.xxx.121:6443 check
+    server control-plane2 xxx.xxx.xxx.122:6443 check
+    server control-plane3 xxx.xxx.xxx.123:6443 check
 
 # 외부에서 dashboard 보기용 
 frontend kubernetes-dashboard-lb
@@ -40,9 +40,9 @@ backend kubernetes-dashboard
     mode tcp
     balance roundrobin
     option tcp-check
-    server control-plane1 xxx.xxxx.xxx.121:31000 check
-    server control-plane2 xxx.xxxx.xxx.122:31000 check
-    server control-plane3 xxx.xxxx.xxx.123:31000 check
+    server control-plane1 xxx.xxx.xxx.121:31000 check
+    server control-plane2 xxx.xxx.xxx.122:31000 check
+    server control-plane3 xxx.xxx.xxx.123:31000 check
 
 # ingress controller http
 frontend kubernetes-http-lb
@@ -55,9 +55,9 @@ backend kubernetes-http
     mode tcp
     balance roundrobin
     option tcp-check
-    server control-plane1 xxx.xxxx.xxx.121:30080 check
-    server control-plane2 xxx.xxxx.xxx.122:30080 check
-    server control-plane3 xxx.xxxx.xxx.123:30080 check
+    server control-plane1 xxx.xxx.xxx.121:30080 check
+    server control-plane2 xxx.xxx.xxx.122:30080 check
+    server control-plane3 xxx.xxx.xxx.123:30080 check
 
 # ingress controller https
 frontend kubernetes-https-lb
@@ -70,9 +70,9 @@ backend kubernetes-https
     mode tcp
     balance roundrobin
     option tcp-check
-    server control-plane1 xxx.xxxx.xxx.121:30443 check
-    server control-plane2 xxx.xxxx.xxx.122:30443 check
-    server control-plane3 xxx.xxxx.xxx.123:30443 check
+    server control-plane1 xxx.xxx.xxx.121:30443 check
+    server control-plane2 xxx.xxx.xxx.122:30443 check
+    server control-plane3 xxx.xxx.xxx.123:30443 check
 ```
 ```bash
 systemctl restart haproxy
