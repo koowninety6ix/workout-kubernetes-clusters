@@ -14,6 +14,7 @@ dnf install -y haproxy
 
 vi /etc/haproxy/haproxy.cfg
 ```
+
 ```yaml
 frontend kubernetes-master-lb
     bind *:6443

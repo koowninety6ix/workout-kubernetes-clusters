@@ -32,7 +32,7 @@ kubectl apply -f recommended.yaml
 vi dashboard-admin.yaml
 ```
 
-[대시보드 관리자 설정 파일 보기](./dashboard-admin.yaml)
+[대시보드 관리자 설정 파일 보기](yaml/dashboard-admin.yaml)
 
 
 ```bash
@@ -70,13 +70,13 @@ https://{NODE_IP}:31000
 ## Ingress 리소스 설정 (Ingress Controller 설정 끝난후 작업)
 
 ```bash
-vi kubernetes-dashboard-ingress.yaml
+vi dashboard-ingress.yaml
 ```
 
-[kubernetes-dashboard-ingress 설정 파일 보기](./nexus_repo.yaml)
+[Ingress 설정 파일 보기](./nexus_repo.yaml)
 
 ```bash
-kubectl apply -f kubernetes-dashboard-ingress.yaml
+kubectl apply -f dashboard-ingress.yaml
 ```
 
 ---

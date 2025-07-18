@@ -8,7 +8,7 @@ image repo, helm_repo 역활, 내부 망일때는 dependency repo 역활
 ```bash
 vi nexus.yaml
 ```
-[Nexus 설정 파일](./nexus.yaml)
+[Nexus 설정 파일](yaml/nexus.yaml)
 
 ```bash
 kubectl apply -f nexus.yaml

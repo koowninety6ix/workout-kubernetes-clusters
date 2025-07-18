@@ -1,9 +1,9 @@
-# cicd-k8s-cluster
+# 쿠버네티스 클러스터 아키텍쳐 설계
 
 ---
 
-## 하드웨어
-- AMD Ryzen 8845HS (8코어 16스레드)
+## 하드웨어 정보
+- CPU: AMD Ryzen 8845HS (8코어 16스레드)
 - RAM: 48GB
 - 스토리지: SSD 1TB
 - 외부 스토리지: 시놀로지 NAS 8T (NFS 제공)
@@ -12,7 +12,7 @@
 
 ## 리소스 구성
 
-### Cluster
+### 노드
 - Control Plane 3개 (CPU: 2c, RAM: 4G, Storge: 40G)
 - Wroker Node 4개 (CPU: 2c, RAM: 7G, Storge: 50G)
 
@@ -21,7 +21,7 @@
 
 ---
 
-## Iptable
+## 네트워크 구성
 
 ### Proxy 11x
 - haproxy + dns xxx.xxx.xxx.110

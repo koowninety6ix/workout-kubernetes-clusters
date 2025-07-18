@@ -14,7 +14,6 @@ docker image {nexushost:port}/jenkins-cicd
 docker login {nexushost:port}
 
 docker push {nexushost:port}/jenkins-cicd
-
 ```
 > image안에 kubectl, podman, helm, jenkins 설치
 
@@ -26,7 +25,7 @@ docker push {nexushost:port}/jenkins-cicd
 vi jenkins.yaml
 ```
 
-[Jenkins 설정 파일](./jenkins.yaml)
+[Jenkins 설정 파일](yaml/jenkins.yaml)
 
 ```bash
 kubectl apply -f jenkins.yaml

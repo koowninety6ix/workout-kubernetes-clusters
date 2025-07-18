@@ -73,7 +73,7 @@ sysctl --system
 
 ---
 
-## 컨테이너 런타임 (containerd)
+## 컨테이너 런타임 (ContainerD)
 
 ### 옵션 1. 수동 설치
 
@@ -106,7 +106,7 @@ systemctl enable containerd
 
 ---
 
-## Kubernetes 설치
+## Kubernetes 설치 (1.33v)
 
 ### 저장소 추가 및 설치
 
