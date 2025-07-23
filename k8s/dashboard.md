@@ -59,6 +59,17 @@ kubectl edit deploy kubernetes-dashboard -n kubernetes-dashboard
   - --disable-settings-authorizer   # 추가
 ```
 
+### kubeconfig 파일 로그인 (선택)
+
+```yaml
+apiVersion: v1
+kind: Config
+users:
+  - name: dashboard-user
+    user:
+      token: {token} # 해당 부분에 secrets token 추가
+```
+
 ### 접속 확인
 
 ```bash
