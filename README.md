@@ -8,8 +8,8 @@
     - [설계](./clusters-resource-plan.md)
 
 2. 기타 구성
-    - [DNS & HaProxy 설치](./haproxy-dns.md)
-    - [Helm Chart 설치](./helm-chart.md)
+    - [DNS & HaProxy 구성](./haproxy-dns.md)
+    - [Helm Chart 구성](./helm-chart.md)
 
 3. 쿠버네티스 구성
     - [쿠버네티스 설치](./k8s/k8s-clusters.md)
