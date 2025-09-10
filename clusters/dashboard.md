@@ -1,8 +1,8 @@
-# Kubernetes 대시보드 설치
+# 대시보드
 
 ---
 
-## 배포 파일 수정 (NodePort 사용)
+## 설치
 
 ```bash
 wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
@@ -21,30 +21,27 @@ spec:
 ```bash
 kubectl apply -f recommended.yaml
 ```
-> NodePort 사용 아유는 외부 접속을 위해
+> NodePort 사용 아유는 외부 접속을 위해, 외부 접속 필요 없거나 외부 접근 가능한 DNS 서버 사용시에는 NodePort는 사용하지 않음.
 
 ---
 
-## 대시보드 관리자 계정 생성
+## 관리자 계정 구성
 
-### 관리자 계정 구성
+---
+
+### 관리자 계정
+
+[대시보드 관리자 설정 파일](yaml/dashboard-admin.yaml)
+
 ```bash
+# 설정 파일로 파일 생성
 vi dashboard-admin.yaml
-```
 
-[대시보드 관리자 설정 파일 보기](yaml/dashboard-admin.yaml)
-
-
-```bash
 kubectl apply -f dashboard-admin.yaml
-```
 
-### 토큰 생성 및 로그인
-
-```bash
+# 토큰 생성, 해당 토큰으로 로그인 가능
 kubectl -n kubernetes-dashboard create token admin-user
 ```
-> 토큰으로 대시보드 로그인 가능
 
 
 ### 로그인 스킵 설정 (선택)
@@ -59,48 +56,44 @@ kubectl edit deploy kubernetes-dashboard -n kubernetes-dashboard
   - --disable-settings-authorizer   # 추가
 ```
 
-### kubeconfig 파일 로그인 (선택)
+### 컨피그 파일 로그인 (선택)
+
+```bash
+vi kubeconfig
+```
 
 ```yaml
 apiVersion: v1
 kind: Config
 users:
-  - name: dashboard-user
+  - name: kubernetes-admin
     user:
       token: {token} # 해당 부분에 secrets token 추가
 ```
 
-### 접속 확인
-
-```bash
-https://{NODE_IP}:31000
-```
-
 ---
 
-## Ingress 리소스 설정 (Ingress Controller 설정 끝난후 작업)
+## 인그레스 설정
+
+[인그레스 설정 파일](./dashboard-ingress.yaml)
 
 ```bash
+# 설정 파일로 파일 생성
 vi dashboard-ingress.yaml
-```
 
-[Ingress 설정 파일 보기](./nexus_repo.yaml)
-
-```bash
 kubectl apply -f dashboard-ingress.yaml
 ```
 
 ---
 
-## 대시보드 리소스 확인용 Matrix Server 설치
+## Matrix Server 설정
 
 ```bash
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
-### Matrix 설치후 인증 에러날시 deployment에 추가
-
 ```yaml
+# Matrix 설치후 인증 에러날시 deployment에 추가
 args:
     - --kubelet-insecure-tls
 ```
@@ -109,4 +102,4 @@ args:
 
 ## 참고 URL
 
- - Kubernetes Dashboard: https://github.com/kubernetes/dashboard
+ - [Kubernetes Dashboard](https://github.com/kubernetes/dashboard)

@@ -1,5 +1,7 @@
 # Ingress Controller 구성 (helm 사용)
 
+## 설치
+
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
