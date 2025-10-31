@@ -1,4 +1,4 @@
-# Vault 구성
+# Vault 설치
 
 ### PV, PVC 설정
 

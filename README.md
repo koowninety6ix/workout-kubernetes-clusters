@@ -38,5 +38,6 @@
 ## 기타 서비스 설치
    - [Vault](./others/vault.md)
    - [Grafana-Prometheus](./others/grafana-prometheus.md)
+   - [Kafka](./others/kafka.md)
 
 
