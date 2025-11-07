@@ -22,8 +22,8 @@ vi /etc/containerd/confing.toml
     [plugins."io.containerd.grpc.v1.cri".registry]
       [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
         # 밑에 내용 추가
-        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."image-registry.clusters.com"]
-          endpoint = ["http://image-registry.clusters.com"]
+        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."image-registry.koowninety6ix.com"]
+          endpoint = ["http://image-registry.koowninety6ix.com"]
 ```
 
 ```bash

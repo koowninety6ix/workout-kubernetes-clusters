@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: dashboard.clusters.com
+    - host: dashboard.koowninety6ix.com
       http:
         paths:
           - path: /
@@ -22,5 +22,5 @@ spec:
                   number: 443
   tls:
     - hosts:
-        - dashboard.clusters.com
+        - dashboard.koowninety6ix.com
       secretName: dashboard-tls

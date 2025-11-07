@@ -99,7 +99,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: repository.clusters.com
+    - host: repository.koowninety6ix.com
       http:
         paths:
           - path: /
@@ -120,7 +120,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: image-registry.clusters.com
+    - host: image-registry.koowninety6ix.com
       http:
         paths:
           - path: /
