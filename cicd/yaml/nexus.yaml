@@ -96,6 +96,7 @@ metadata:
   namespace: cicd
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "0" # 이미지 push 크기제한 해제
 spec:
   ingressClassName: nginx
   rules:
